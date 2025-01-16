@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_stripe__payments
+    description: transactions for order payments and success status
+    columns:
+      - name: payment_id
+        description: primary key and unique identify for each payment transaction
+        tests:
+          - not_null
+          - unique
+              
+      - name: payment_status
+        tests:
+          - accepted_values:
+              values:
+                - success
+                - fail
