@@ -16,4 +16,8 @@ sources:
     tables:
       - name: payment
         description: order payments and status.
+        loaded_at_field: _batched_at
+        freshness:
+          warn_after: {count: 15, period: day}
+          error_after: {count: 30, period: day}
 
