@@ -6,9 +6,31 @@ sources:
     schema: jaffle_shop
     tables:
       - name: customers
-        description: customer information.
+        description: customer information
+        columns:
+        - name: id
+          description: primary key at source.
+          tests:
+            - not_null
+            - unique
+
+            
+        
       - name: orders
         description: orders per customer.
+        columns:
+        - name: id
+          description: primary key at source.
+          tests:
+            - not_null 
+            - unique
+        - name: user_id
+          description: foreign key at source to customer table.
+          tests:
+          - relationships:
+              to: ref('customers')
+              field: customer_id
+        
 
   - name: stripe
     database: raw
@@ -20,4 +42,12 @@ sources:
         freshness:
           warn_after: {count: 15, period: day}
           error_after: {count: 30, period: day}
+        columns:
+          - name: id
+            description: primary key at source.
+            tests:
+              - not_null
+              - unique
+              
+          
 
