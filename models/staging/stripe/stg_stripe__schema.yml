@@ -2,11 +2,23 @@ version: 2
 
 models:
   - name: stg_stripe__payments
-    description: transactions for order payments and success status
+    description: transactions for order payments and success status - renamed source table with tests.
     columns:
       - name: payment_id
         description: primary key and unique identify for each payment transaction
+        tests:
+          - unique
+          - not_null 
 
+      - name: order_id
+        description: foreign key to jaffle shop orders. join to orders required for customer name.
+        tests:
+          - relationships:
+              field: order_id
+              to: ref('stg_japple_shop__orders')
+
+      - name: amount
+        description: converted from cents to dollars.
               
       - name: payment_status
         tests:
