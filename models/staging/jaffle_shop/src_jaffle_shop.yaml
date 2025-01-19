@@ -10,12 +10,15 @@ sources:
         columns:
         - name: id
           description: primary key at source.
+          data_type: number
           tests:
             - not_null
             - unique
+        - name: first_name
+          data_type: varchar
+        - name: last_name
+          data_type: varchar
 
-            
-        
       - name: orders
         description: orders per customer.
         columns:
@@ -35,6 +38,10 @@ sources:
           tests:
             - accepted_values:
                 values: ['returned','completed','shipped','placed','return_pending']
+        - name: order_date
+          data_type: date
+        - name: _etl_loaded_at
+          data_type: timestamp_ntz
         
         
 
@@ -54,6 +61,17 @@ sources:
             tests:
               - not_null
               - unique
-              
+          - name: orderid
+            data_type: number
+          - name: paymentmethod
+            data_type: varchar
+          - name: status
+            data_type: varchar
+          - name: amount
+            data_type: number
+          - name: created
+            data_type: date
+          - name: _batched_at
+            data_type: timestamp_ntz
           
 
