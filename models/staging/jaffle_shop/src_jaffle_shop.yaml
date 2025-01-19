@@ -30,6 +30,12 @@ sources:
           - relationships:
               to: ref('customers')
               field: customer_id
+        - name: status
+          description: '{{doc ("order_status")}}'
+          tests:
+            - accepted_values:
+                values: ['returned','completed','shipped','placed','return_pending']
+        
         
 
   - name: stripe
