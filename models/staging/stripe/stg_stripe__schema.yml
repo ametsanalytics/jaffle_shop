@@ -15,7 +15,7 @@ models:
         tests:
           - relationships:
               field: order_id
-              to: ref('stg_japple_shop__orders')
+              to: ref('stg_jaffle_shop__orders')
 
       - name: amount
         description: converted from cents to dollars.
