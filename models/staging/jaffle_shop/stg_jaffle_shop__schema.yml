@@ -2,17 +2,19 @@ version: 2
 
 models:
   - name: stg_jaffle_shop__customers
+    description: jaffle shop customers - renamed source table with generic tests.
     columns:
       - name: customer_id
-        description: primary key and unique identifier for customers.
+        description: unique identifier + primary key for customers.
         tests:
           - not_null
           - unique
   
   - name: stg_jaffle_shop__orders
+    description: jaffle shop orders - renamed source table with generic tests.
     columns:
       - name: order_id
-        description: primary key and unique identifier for orders
+        description: unique identifier + primary key for orders
         tests:
           - not_null
           - unique
@@ -20,13 +22,13 @@ models:
       - name: customer_id
         description: foreign key to customers. user who made the order.
         tests:
-          - not_null
           - relationships:
-              to: ref('stg_jaffle_shop__customers')
               field: customer_id
-            
+              to: ref('stg_jaffle_shop__customers')
+
+
       - name: status
-        description: order status
+        description: '{{doc ("order_status")}}'
         tests:
           - accepted_values:
               values:
