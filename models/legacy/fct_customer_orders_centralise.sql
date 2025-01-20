@@ -23,7 +23,7 @@ customer_orders as (
         full_name,
         surname,
         givenname,
-        count(order_id) over (partition by orders.customer_id) as order_count,
+        count(*) over (partition by orders.customer_id) as order_count,
         min(order_date) over (partition by orders.customer_id) as first_order_date,
         sum(nvl2(valid_order_date,order_value_dollars,0)) over (partition by orders.customer_id) as total_lifetime_value
 
@@ -34,9 +34,9 @@ customer_orders as (
         count(nvl2(valid_order_date,1,0)) over (partition by orders.customer_id) as non_returned_order_count,
         array_agg(distinct order_id) over (partition by orders.customer_id) as order_ids
  */
- 
+
     from customers
-    left join orders on orders.customer_id = customers.customer_id
+    inner join orders on orders.customer_id = customers.customer_id
 
 ), 
 
