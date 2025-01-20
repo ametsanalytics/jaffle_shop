@@ -1,47 +1,90 @@
-with paid_orders as (select orders.id as order_id,
-    orders.user_id	as customer_id,
-    orders.order_date as order_placed_at,
-        orders.status as order_status,
-    p.total_amount_paid,
-    p.payment_finalized_date,
-    c.first_name    as customer_first_name,
-        c.last_name as customer_last_name
-from raw.jaffle_shop.orders as orders
-left join (select orderid as order_id, max(created) as payment_finalized_date, sum(amount) / 100.0 as total_amount_paid
-        from raw.stripe.payment
-        where status <> 'fail'
-        group by 1) p on orders.id = p.order_id
-left join raw.jaffle_shop.customers c on orders.user_id = c.id ),
+--- import
 
-customer_orders 
-as (select c.id as customer_id
-    , min(order_date) as first_order_date
-    , max(order_date) as most_recent_order_date
-    , count(orders.id) as number_of_orders
-from raw.jaffle_shop.customers c 
-left join raw.jaffle_shop.orders as orders
-on orders.user_id = c.id 
-group by 1)
+with orders as (
 
-select
-p.*,
-row_number() over (order by p.order_id) as transaction_seq,
-row_number() over (partition by customer_id order by p.order_id) as customer_sales_seq,
-case when c.first_order_date = p.order_placed_at
-then 'new'
-else 'return' end as nvsr,
-x.clv_bad as customer_lifetime_value,
-c.first_order_date as fdos
-from paid_orders p
-left join customer_orders as c using (customer_id)
-left outer join 
-(
-        select
-        p.order_id,
-        sum(t2.total_amount_paid) as clv_bad
-    from paid_orders p
-    left join paid_orders t2 on p.customer_id = t2.customer_id and p.order_id >= t2.order_id
-    group by 1
-    order by p.order_id
-) x on x.order_id = p.order_id
-order by order_id
+    select  
+        order_id,
+        customer_id,
+        order_date as order_placed_at,
+        order_status, 
+    from  {{ ref('int_orders') }}
+),
+
+customers as (
+
+    select    
+        customer_id,
+        first_name as customer_first_name,
+        last_name as customer_last_name
+    from {{ ref('stg_jaffle_shop__customers') }}
+
+),
+
+payments as (
+
+    select * from {{ ref('stg_stripe__payments') }}
+),
+
+-- logic
+paid_orders as (
+
+        select 
+            order_id,
+            max(payment_created) as payment_finalized_date, 
+            sum(amount) as total_amount_paid
+        from payments
+        where payment_status <> 'fail'
+        group by 1
+
+
+),
+
+customer_paid_orders as ( 
+    select 
+        orders.order_id,
+        orders.customer_id,
+        order_placed_at,
+        order_status,
+        p.total_amount_paid,
+        p.payment_finalized_date,
+        customer_first_name,
+        customer_last_name,
+        sum(total_amount_paid) over (partition by orders.customer_id) as customer_lifetime_value,
+        min(order_placed_at) over (partition by orders.customer_id) as first_order_date,
+        max(order_placed_at) over (partition by orders.customer_id) as most_recent_order_date,
+        count(orders.order_id) over (partition by orders.customer_id) as number_of_orders,
+        row_number() over (order by orders.order_id) as transaction_seq,
+        row_number() over (partition by orders.customer_id order by orders.order_id) as customer_sales_seq
+
+    from orders
+    left join paid_orders p on orders.order_id = p.order_id
+    left join customers c on orders.customer_id = c.customer_id 
+
+
+),
+
+final as (
+
+    select
+        order_id,
+        customer_id,
+        order_placed_at,
+        order_status,
+        total_amount_paid,
+        payment_finalized_date,
+        customer_first_name,
+        customer_last_name,
+        transaction_seq,
+        customer_sales_seq,
+        case 
+            when first_order_date = order_placed_at
+            then 'new' else 'return' 
+        end as nvsr,
+        customer_lifetime_value,
+        first_order_date as fdos   
+
+    from customer_paid_orders 
+      
+)
+
+select * from final
