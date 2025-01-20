@@ -10,7 +10,6 @@ sources:
         columns:
         - name: id
           description: primary key at source.
-          data_type: number
           tests:
             - not_null
             - unique
@@ -62,7 +61,6 @@ sources:
               - not_null
               - unique
           - name: orderid
-            data_type: number
           - name: paymentmethod
             data_type: varchar
           - name: status

@@ -64,3 +64,4 @@ left outer join raw.stripe.payment payments
 on orders.id = payments.orderid
 
 where payments.status != 'fail'
+--and customer_id = 54
