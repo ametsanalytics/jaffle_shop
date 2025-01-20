@@ -5,7 +5,7 @@ with orders as (
     select *,
     row_number() over (partition by customer_id order by order_date, order_id) as user_order_seq
     
-    from {{ ref('int_orders') }}
+    from {{ ref('stg_jaffle_shop__orders') }}
 ),
 
 customers as (
