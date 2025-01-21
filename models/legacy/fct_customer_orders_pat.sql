@@ -1,16 +1,6 @@
 --- import
 
-with orders as (
-
-    select  
-        order_id,
-        customer_id,
-        order_date as order_placed_at,
-        order_status, 
-    from  {{ ref('int_orders') }}
-),
-
-customers as (
+with customers as (
 
     select    
         customer_id,
@@ -20,29 +10,17 @@ customers as (
 
 ),
 
-payments as (
-
-    select * from {{ ref('stg_stripe__payments') }}
-),
-
--- logic
 paid_orders as (
 
-        select 
-            order_id,
-            max(payment_created) as payment_finalized_date, 
-            sum(amount) as total_amount_paid
-        from payments
-        where payment_status <> 'fail'
-        group by 1
+      select * from {{ ref('int_paid_orders') }}
 
 
 ),
 
 customer_paid_orders as ( 
     select 
-        orders.order_id,
-        orders.customer_id,
+        paid_orders.order_id,
+        paid_orders.customer_id,
         order_placed_at,
         order_status,
         paid_orders.total_amount_paid,
@@ -51,13 +29,12 @@ customer_paid_orders as (
         customer_last_name
 
         /*
-        min(order_placed_at) over (partition by orders.customer_id) as first_order_date,
-        max(order_placed_at) over (partition by orders.customer_id) as most_recent_order_date,
-        count(orders.order_id) over (partition by orders.customer_id) as number_of_orders,*/
+        min(order_placed_at) over (partition by paid_orders.customer_id) as first_order_date,
+        max(order_placed_at) over (partition by paid_orders.customer_id) as most_recent_order_date,
+        count(paid_orders.order_id) over (partition by paid_orders.customer_id) as number_of_orders,*/
         
-    from orders
-    left join paid_orders  on orders.order_id = paid_orders.order_id
-    left join customers  on orders.customer_id = customers.customer_id 
+    from paid_orders  
+    left join customers  on paid_orders.customer_id = customers.customer_id 
 
 
 ),
@@ -85,7 +62,7 @@ final as (
         end as nvsr,
 
         sum(total_amount_paid) over (partition by customer_id order by  order_placed_at, order_id) as customer_lifetime_value,
-        first_value(first_order_date) over (partition by customer_id order by order_placed_at, order_id) as fdos   
+        first_value(order_placed_at) over (partition by customer_id order by order_placed_at, order_id) as fdos   
 
     from customer_paid_orders 
       
