@@ -27,7 +27,7 @@ models:
               to: ref('stg_jaffle_shop__customers')
 
 
-      - name: status
+      - name: order_status
         description: '{{doc ("order_status")}}'
         tests:
           - accepted_values:
