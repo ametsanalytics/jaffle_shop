@@ -8,3 +8,5 @@ select
 
 
 from {{ source('jaffle_shop', 'orders') }}
+
+{{dev_limit_rows('order_date')}}
