@@ -1,0 +1,16 @@
+sources:
+  - name: snowflake
+    database: snowflake
+    schema: account_usage
+    tables:
+      - name: aggregate_query_history
+        description: snowflake query history used to get fresher data
+        loaded_at_field: interval_end_time
+        freshness: 
+          error_after:
+            count: 3
+            period: hour
+          warn_after:
+            count: 10
+            period: minute
+        
