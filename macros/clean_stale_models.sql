@@ -1,4 +1,4 @@
-{% macro clean_stale_models(database=target.database, schema=target.schema, days=7, dry_run=True) %}
+{% macro clean_stale_models(database=target.database, schema=target.schema, days=2, dry_run=True) %}
     
     {% set get_drop_commands_query %}
         select
