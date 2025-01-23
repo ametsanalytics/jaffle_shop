@@ -1,4 +1,5 @@
 select
+   -- {{dbt_utils.generate_surrogate_key(['user_id','id'])}} as customer_order_id,
     id as order_id,
     user_id as customer_id,
     order_date,
