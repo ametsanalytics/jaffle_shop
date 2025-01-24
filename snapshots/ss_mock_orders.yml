@@ -1,0 +1,11 @@
+snapshots:
+  - name: mock_orders__snapshot
+    relation: source('snapshot', 'mock_orders')
+    config:
+      database: transform
+      schema: snapshot
+      strategy: timestamp
+      unique_key: order_id
+      updated_at: updated_at
+
+      

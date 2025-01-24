@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: snapshot
+    database: transform
+    schema: dbt_melissa
+    tables:
+      - name: mock_orders
