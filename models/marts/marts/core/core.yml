@@ -20,6 +20,11 @@ models:
           - relationships:
               to: ref('customers')
               field: customer_id
+          - unique:
+              config:
+                severity: warn
+                error_if: ">25"
+                warn_if: ">10"
 
   - name: customers
     description: dim customers
