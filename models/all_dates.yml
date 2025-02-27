@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: all_dates
+    description: use this date dimension table to scaffold dates which will help with filtering. 
+    columns:
+      - name: date_day
+        description: Includes all days from 2018-01-01 to 12 months ahead from current day. 
+        data_type: date
+        tests:
+          - unique 
+          - not_null
+              

@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: ephemeral model, not selectable in data warehouse. Includes successful payments and orders only
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              field: order_id
+              to: ref('stg_stripe__payments')
+      - name: customer_id
+        tests:
+          - relationships:
+              field: customer_id
+              to: ref('customers')
+          

@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: int_orders__pivoted
+    description: order value by payment methods.
+    tests:
+      - equal_rowcount:
+          compare_model: ref('stg_orders')
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+
+          - relationships:
+              to: ref('stg_payments')
+              field: order_id
