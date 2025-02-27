@@ -26,6 +26,7 @@ models:
                # error_if: ">25"
                # warn_if: ">10"
                 store_failures: true
+                schema: stupid_tests
 
   - name: customers
     description: dim customers
