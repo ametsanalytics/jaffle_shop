@@ -3,8 +3,12 @@ version: 2
 models:
   - name: fct_orders
     description: fact table of orders
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "amount_paid > 0"
 
     columns:
       - name: order_id
         tests:
           - unique
+      - name: amount_paid
