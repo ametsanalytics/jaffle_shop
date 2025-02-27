@@ -11,4 +11,6 @@ packages:
     version: 1.0.0
   - package: calogica/dbt_date
     version: 0.10.1
-sha1_hash: 189c68f7911e58c7774b99f92397441e93eaa679
+  - package: calogica/dbt_expectations
+    version: 0.10.4
+sha1_hash: a70ff408d2063267e040bf9a01f9e3855172197b
