@@ -22,9 +22,10 @@ models:
               field: customer_id
           - unique:
               config:
-                severity: warn
-                error_if: ">25"
-                warn_if: ">10"
+                severity: error
+               # error_if: ">25"
+               # warn_if: ">10"
+                store_failures: true
 
   - name: customers
     description: dim customers
