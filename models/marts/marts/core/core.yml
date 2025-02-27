@@ -35,4 +35,6 @@ models:
           - relationships:
               to: ref('stg_jaffle_shop__customers')
               field: customer_id
-          - unique
+          - unique:
+              config:
+                limit: 4
