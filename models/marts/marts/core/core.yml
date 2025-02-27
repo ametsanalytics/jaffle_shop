@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: fact table of orders
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "amount_paid > 0"
+
+    columns:
+      - name: order_id
+        tests:
+          - unique
+      - name: amount_paid
+        tests:
+        - dbt_expectations.expect_column_to_exist
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('customers')
+              field: customer_id
+
+  - name: customers
+    description: dim customers
+    
+    columns:
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('stg_jaffle_shop__customers')
+              field: customer_id
+          - unique
