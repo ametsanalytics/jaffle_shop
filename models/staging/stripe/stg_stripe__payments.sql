@@ -8,6 +8,6 @@ select
     _batched_at as loaded_at_date,
     max(_batched_at) over (partition by order_id) max_load_date
 
-from {{ source('stripe', 'payment') }}
+from {{ source('stripe', 'payment_old') }}
 
 {{dev_limit_rows()}}

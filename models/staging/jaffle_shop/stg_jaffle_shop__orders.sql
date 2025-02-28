@@ -7,6 +7,6 @@ select
     case when order_status not in ('returned','return_pending') then order_date end as valid_order_date 
 
 
-from {{ source('jaffle_shop', 'orders') }}
+from {{ source('jaffle_shop', 'orders_old') }}
 
 {{dev_limit_rows('order_date')}}

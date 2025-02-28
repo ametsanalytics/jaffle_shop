@@ -5,7 +5,7 @@ sources:
     database: raw
     schema: jaffle_shop
     tables:
-      - name: customers
+      - name: customers_old
         description: customer information
         columns:
         - name: id
@@ -18,7 +18,7 @@ sources:
         - name: last_name
           data_type: varchar
 
-      - name: orders
+      - name: orders_old
         description: orders per customer.
         columns:
         - name: id
@@ -26,7 +26,7 @@ sources:
           tests:
             - not_null 
             - unique
-        - name: user_id
+        - name: customer
           description: foreign key at source to customer table.
           tests:
           - relationships:
@@ -43,33 +43,3 @@ sources:
           data_type: timestamp_ntz
         
         
-
-  - name: stripe
-    database: raw
-    schema: stripe
-    tables:
-      - name: payment
-        description: order payments and status.
-        loaded_at_field: _batched_at
-        freshness:
-          warn_after: {count: 15, period: day}
-          error_after: {count: 30, period: day}
-        columns:
-          - name: id
-            description: primary key at source.
-            tests:
-              - not_null
-              - unique
-          - name: orderid
-          - name: paymentmethod
-            data_type: varchar
-          - name: status
-            data_type: varchar
-          - name: amount
-            data_type: number
-          - name: created
-            data_type: date
-          - name: _batched_at
-            data_type: timestamp_ntz
-          
-

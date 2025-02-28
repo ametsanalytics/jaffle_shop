@@ -1,0 +1,32 @@
+version : 2
+
+sources:
+  - name: stripe
+    database: raw
+    schema: stripe
+    tables:
+      - name: payment_old
+        description: order payments and status.
+        loaded_at_field: _batched_at
+        freshness:
+          warn_after: {count: 15, period: day}
+          error_after: {count: 30, period: day}
+        columns:
+          - name: id
+            description: primary key at source.
+            tests:
+              - not_null
+              - unique
+          - name: orderid
+          - name: paymentmethod
+            data_type: varchar
+          - name: status
+            data_type: varchar
+          - name: amount
+            data_type: number
+          - name: created
+            data_type: date
+          - name: _batched_at
+            data_type: timestamp_ntz
+          
+
