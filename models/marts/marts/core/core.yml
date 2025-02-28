@@ -3,18 +3,26 @@ version: 2
 models:
   - name: fct_orders
     description: fact table of orders
+    config:
+      contract:
+        enforced: true
     tests:
       - dbt_utils.expression_is_true:
           expression: "amount_paid > 0"
 
     columns:
       - name: order_id
+        data_type: integer
         tests:
           - unique
+
       - name: amount_paid
+        data_type: number
         tests:
         - dbt_expectations.expect_column_to_exist
+
       - name: customer_id
+        data_type: integer
         tests:
           - not_null
           - relationships:
@@ -27,6 +35,9 @@ models:
                # warn_if: ">10"
                 store_failures: true
                 schema: stupid_tests
+
+      - name: order_date
+        data_type: date
 
   - name: customers
     description: dim customers
