@@ -50,4 +50,4 @@ tests:
     +severity: warn
     +store_failures: true
     +schema: stupid_tests
-    _
+
